@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:text="@string/insert_bar_title"
+        android:layout_width="wrap_content"
+        android:id="@+id/welcome_text"/>
+
+    <EditText android:id="@+id/insert_bar_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/insert_bar"/>
+
+    <EditText android:id="@+id/insert_team_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/insert_team"/>
+
+    <Button android:id="@+id/insert_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Insert"/>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:id="@+id/insert_result_message"/>
+
+</LinearLayout>
