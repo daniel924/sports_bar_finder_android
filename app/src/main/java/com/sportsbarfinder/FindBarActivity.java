@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class FindBarActivity extends Activity {
     private static String LOG_TAG = FindBarActivity.class.getSimpleName();
-    private TextView resultText;
+    private TextView resultText = null;
 
     class SearchTask extends AsyncTask<String, Void, String> {
 
@@ -87,4 +87,27 @@ public class FindBarActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save state to the savedInstanceState
+        if (resultText != null) {
+            savedInstanceState.putString("Results", (String) resultText.getText());
+        }
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore state from savedInstanceState
+        String results = savedInstanceState.getString("Results");
+        if(results != null) {
+            resultText.setText(results);
+            resultText.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
 }
