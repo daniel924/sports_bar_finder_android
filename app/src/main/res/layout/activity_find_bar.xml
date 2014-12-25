@@ -10,11 +10,6 @@
     android:orientation="vertical"
     android:id="@+id/bar_finder_activity">
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:text="@string/welcome"
-        android:layout_width="wrap_content"
-        android:id="@+id/welcome_text"/>
 
     <EditText android:id="@+id/edit_message"
         android:layout_width="wrap_content"
@@ -31,8 +26,13 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:freezesText="true"
-        android:id="@+id/result_message"/>
+        android:id="@+id/bar_result"/>
 
-
+    <TextView
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:freezesText="true"
+        android:id="@+id/teams_result"/>
 
 </LinearLayout>

@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,9 +22,13 @@ public class ApiUtils {
     private static String LOG_TAG = ApiUtils.class.getSimpleName();
     private static String baseUrl = "http://sports-bar-finder.appspot.com/";
 
-    public static String FindBarByName(String searchVal) throws IOException {
-        String response = getRequest(baseUrl+"/search?value=" + searchVal);
-        return response;
+    public static Bar FindBarByName(String searchVal) throws IOException {
+        String response = getRequest(
+                baseUrl + "/search?value=" + URLEncoder.encode(searchVal, "UTF-8"));
+        String[] split = response.split(":");
+        String bar = split[0];
+        List<String> teams = Arrays.asList(split[1].split(","));
+        return new Bar(bar, teams);
     }
 
     private static String getRequest(String url) throws IOException {
@@ -41,9 +47,9 @@ public class ApiUtils {
     }
 
     public static void insertBar(String bar, List<String> teams) throws IOException {
-        String barArgs = "populate?bar=" + bar + "&teams=";
+        String barArgs = "populate?bar=" + URLEncoder.encode(bar, "UTF-8") + "&teams=";
         for(String team: teams) {
-            barArgs += team + ",";
+            barArgs += URLEncoder.encode(team, "UTF-8") + ",";
         }
         barArgs = barArgs.substring(0, barArgs.length()-1);
         getRequest(baseUrl + barArgs);

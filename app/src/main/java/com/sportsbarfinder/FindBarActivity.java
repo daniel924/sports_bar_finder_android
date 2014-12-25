@@ -17,20 +17,23 @@ import java.io.IOException;
 
 public class FindBarActivity extends Activity {
     private static String LOG_TAG = FindBarActivity.class.getSimpleName();
-    private TextView resultText = null;
+    private TextView barText = null;
+    private TextView teamsText = null;
 
-    class SearchTask extends AsyncTask<String, Void, String> {
+    class SearchTask extends AsyncTask<String, Void, Bar> {
 
         @Override
-        public String doInBackground(String... params) {
+        public Bar doInBackground(String... params) {
             try {
-                final String response = ApiUtils.FindBarByName(params[0]);
-                Log.d(LOG_TAG, "Response: " + response);
+                final Bar response = ApiUtils.FindBarByName(params[0]);
+                Log.d(LOG_TAG, "Response: " + response.toString());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        resultText.setText(response);
-                        resultText.setVisibility(View.VISIBLE);
+                        barText.setText(response.name);
+                        barText.setVisibility(View.VISIBLE);
+                        teamsText.setText(response.getTeams());
+                        teamsText.setVisibility(View.VISIBLE);
                     }
                 });
                 return response;
@@ -48,7 +51,8 @@ public class FindBarActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_bar);
 
-        resultText = (TextView) findViewById(R.id.result_message);
+        barText = (TextView) findViewById(R.id.bar_result);
+        teamsText = (TextView) findViewById(R.id.teams_result);
         final EditText editText = (EditText) findViewById(R.id.edit_message);
         final String barName = editText.getText().toString();
 
@@ -93,18 +97,21 @@ public class FindBarActivity extends Activity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         // Save state to the savedInstanceState
-        if (resultText != null) {
-            savedInstanceState.putString("Results", (String) resultText.getText());
+        if (barText != null) {
+            savedInstanceState.putString("bar_result", (String) barText.getText());
+        }
+        if(teamsText != null) {
+            savedInstanceState.putString("teams_result", (String) teamsText.getText());
         }
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore state from savedInstanceState
-        String results = savedInstanceState.getString("Results");
-        if(results != null) {
-            resultText.setText(results);
-            resultText.setVisibility(View.VISIBLE);
+        String bar_result = savedInstanceState.getString("bar_result");
+        if(bar_result != null) {
+            barText.setText(bar_result);
+            barText.setVisibility(View.VISIBLE);
         }
 
     }
