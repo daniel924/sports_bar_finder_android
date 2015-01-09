@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -64,14 +64,14 @@ public class FindBarActivity extends Activity {
 
         barText = (TextView) findViewById(R.id.bar_result);
         teamsText = (TextView) findViewById(R.id.teams_result);
-        final EditText editText = (EditText) findViewById(R.id.edit_message);
-        final String barName = editText.getText().toString();
+        final SearchView searchView = (SearchView) findViewById(R.id.edit_message);
+        final String barName = searchView.getQuery().toString();
 
         Button searchButton = (Button) findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SearchTask().execute(editText.getText().toString());
+                new SearchTask().execute(searchView.getQuery().toString());
             }
         });
     }
