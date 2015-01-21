@@ -25,11 +25,17 @@
         android:layout_height="wrap_content"
         android:text="Search"/>
 
-    <fragment
-        android:name="com.sportsbarfinder.FindBarActivity$BarFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:layout="@layout/fragment_bar"/>
+
+    <!--<fragment-->
+        <!--android:name="com.sportsbarfinder.FindBarActivity$BarFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--tools:layout="@layout/fragment_bar"/>-->
+
+    <ListView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/list_view"
+    />
 
 </LinearLayout>

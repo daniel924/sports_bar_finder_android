@@ -14,7 +14,7 @@ public class Bar {
         this.teams = teams;
     }
 
-    public String getTeams() {
+    public String prettyPrintTeams() {
         String s = "";
         for(String team: teams) {
             s += team + "\n";

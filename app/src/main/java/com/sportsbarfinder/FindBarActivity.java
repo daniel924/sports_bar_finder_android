@@ -12,16 +12,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FindBarActivity extends Activity {
     private static String LOG_TAG = FindBarActivity.class.getSimpleName();
     private TextView barText = null;
     private TextView teamsText = null;
+    public BarAdapter adapter;
 
     class SearchTask extends AsyncTask<String, Void, Bar> {
 
@@ -30,13 +34,12 @@ public class FindBarActivity extends Activity {
             try {
                 final Bar response = ApiUtils.FindBarByName(params[0]);
                 Log.d(LOG_TAG, "Response: " + response.toString());
-                runOnUiThread(new Runnable() {
+                FindBarActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        barText.setText(response.name);
-                        barText.setVisibility(View.VISIBLE);
-                        teamsText.setText(response.getTeams());
-                        teamsText.setVisibility(View.VISIBLE);
+                        List<Bar> bars = new ArrayList<Bar>();
+                        bars.add(response);
+                        adapter.setList(bars);
                     }
                 });
                 return response;
@@ -62,8 +65,10 @@ public class FindBarActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_bar);
 
-        barText = (TextView) findViewById(R.id.bar_result);
-        teamsText = (TextView) findViewById(R.id.teams_result);
+        adapter = new BarAdapter(this, new ArrayList<Bar>());
+        ListView listView = (ListView) findViewById(R.id.list_view);
+        listView.setAdapter(adapter);
+
         final SearchView searchView = (SearchView) findViewById(R.id.edit_message);
         final String barName = searchView.getQuery().toString();
 
@@ -124,8 +129,5 @@ public class FindBarActivity extends Activity {
             barText.setText(bar_result);
             barText.setVisibility(View.VISIBLE);
         }
-
     }
-
-
 }
