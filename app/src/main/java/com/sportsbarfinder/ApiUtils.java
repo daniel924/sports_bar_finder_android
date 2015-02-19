@@ -25,10 +25,15 @@ public class ApiUtils {
     public static Bar FindBarByName(String searchVal) throws IOException {
         String response = getRequest(
                 baseUrl + "/search?value=" + URLEncoder.encode(searchVal, "UTF-8"));
-        String[] split = response.split(":");
-        String bar = split[0];
-        List<String> teams = Arrays.asList(split[1].split(","));
-        return new Bar(bar, teams);
+        if(response.equals("")) {
+            return null;
+        }
+        else {
+            String[] split = response.split(":");
+            String bar = split[0];
+            List<String> teams = Arrays.asList(split[1].split(","));
+            return new Bar(bar, teams);
+        }
     }
 
     private static String getRequest(String url) throws IOException {

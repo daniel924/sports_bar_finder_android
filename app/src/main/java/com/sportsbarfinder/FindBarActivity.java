@@ -23,9 +23,8 @@ import java.util.List;
 
 public class FindBarActivity extends Activity {
     private static String LOG_TAG = FindBarActivity.class.getSimpleName();
-    private TextView barText = null;
-    private TextView teamsText = null;
-    public BarAdapter adapter;
+    ListView listView = null;
+    public BarAdapter adapter = null;
 
     class SearchTask extends AsyncTask<String, Void, Bar> {
 
@@ -33,13 +32,29 @@ public class FindBarActivity extends Activity {
         public Bar doInBackground(String... params) {
             try {
                 final Bar response = ApiUtils.FindBarByName(params[0]);
+                if(response == null) {
+                    final String logString = "Could not find results for: " + params[0];
+                    FindBarActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listView.setVisibility(View.GONE);
+                            TextView notFoundText = (TextView) findViewById(R.id.not_found_txt);
+                            notFoundText.setVisibility(View.VISIBLE);
+                            notFoundText.setText(logString);
+                        }
+                    });
+                    return null;
+                }
                 Log.d(LOG_TAG, "Response: " + response.toString());
                 FindBarActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        TextView notFoundText = (TextView) findViewById(R.id.not_found_txt);
+                        notFoundText.setVisibility(View.GONE);
                         List<Bar> bars = new ArrayList<Bar>();
                         bars.add(response);
                         adapter.setList(bars);
+                        listView.setVisibility(View.VISIBLE);
                     }
                 });
                 return response;
@@ -66,7 +81,7 @@ public class FindBarActivity extends Activity {
         setContentView(R.layout.activity_find_bar);
 
         adapter = new BarAdapter(this, new ArrayList<Bar>());
-        ListView listView = (ListView) findViewById(R.id.list_view);
+        listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(adapter);
 
         final SearchView searchView = (SearchView) findViewById(R.id.edit_message);
@@ -79,6 +94,8 @@ public class FindBarActivity extends Activity {
                 new SearchTask().execute(searchView.getQuery().toString());
             }
         });
+
+
     }
 
     @Override
@@ -86,6 +103,7 @@ public class FindBarActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.find_bar, menu);
         return true;
+
     }
 
     @Override
@@ -113,21 +131,18 @@ public class FindBarActivity extends Activity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         // Save state to the savedInstanceState
-        if (barText != null) {
-            savedInstanceState.putString("bar_result", (String) barText.getText());
-        }
-        if(teamsText != null) {
-            savedInstanceState.putString("teams_result", (String) teamsText.getText());
+        if (adapter != null) {
+            // Bar[] values = adapter.getValues();
         }
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore state from savedInstanceState
-        String bar_result = savedInstanceState.getString("bar_result");
+        String bar_result = savedInstanceState.getString("bar_list");
         if(bar_result != null) {
-            barText.setText(bar_result);
-            barText.setVisibility(View.VISIBLE);
+            // barText.setText(bar_result);
+            // barText.setVisibility(View.VISIBLE);
         }
     }
 }
