@@ -1,47 +1,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bar_finder_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".FindBarActivity"
     android:orientation="vertical"
-    android:id="@+id/bar_finder_activity">
+    tools:context=".FindBarActivity">
+
+    <!--<include layout="@layout/search_bar"/>-->
 
     <SearchView
+        android:id="@+id/edit_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="@string/sports_team"
-        android:iconifiedByDefault="false"
-        android:paddingLeft="-15dp"
-        android:id="@+id/edit_message"
         android:background="@drawable/border"
-     />
+        android:backgroundTint="@android:color/black"
+        android:iconifiedByDefault="false"
+        android:paddingLeft="8dp"
+        android:paddingRight="44dp"
+        android:queryHint="@string/sports_team"
+        android:textSize="15sp" />
 
-    <Button android:id="@+id/search_button"
+    <Button
+        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"/>
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:text="Search" />
 
-    <TextView android:id="@+id/not_found_txt"
+    <TextView
+        android:id="@+id/not_found_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+
         />
 
 
-
     <!--<fragment-->
-        <!--android:name="com.sportsbarfinder.FindBarActivity$BarFragment"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--tools:layout="@layout/fragment_bar"/>-->
+    <!--android:name="com.sportsbarfinder.FindBarActivity$BarFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:layout="@layout/fragment_bar"/>-->
 
     <ListView
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:id="@+id/list_view"
-    />
+        android:id="@+id/list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin" />
 
 </LinearLayout>
