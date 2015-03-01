@@ -1,6 +1,10 @@
 package com.sportsbarfinder;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +12,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,14 +29,28 @@ public class ApiUtils {
     public static Bar FindBarByName(String searchVal) throws IOException {
         String response = getRequest(
                 baseUrl + "/search?value=" + URLEncoder.encode(searchVal, "UTF-8"));
-        if(response.equals("")) {
+        if (response.equals("")) {
             return null;
         }
-        else {
-            String[] split = response.split(":");
-            String bar = split[0];
-            List<String> teams = Arrays.asList(split[1].split(","));
-            return new Bar(bar, teams);
+        try {
+            JSONArray barList = new JSONObject(response).getJSONArray("bars");
+            Bar[] bars = new Bar[barList.length()];
+
+            for(int i = 0; i < barList.length(); i++) {
+                JSONObject o = barList.getJSONObject(i);
+                String name = o.getString("name");
+                JSONArray jsonTeams = o.getJSONArray("teams");
+                int x = jsonTeams.length();
+                List<String> teams = new ArrayList<String>();
+                for(int j = 0; j < jsonTeams.length(); j++ ) {
+                    teams.add(jsonTeams.getString(j));
+                }
+                bars[i] = new Bar(name, teams);
+            }
+            return bars[0];
+        } catch (JSONException ex) {
+            // Do something better here, maybe even throw the exception.
+            return null;
         }
     }
 
