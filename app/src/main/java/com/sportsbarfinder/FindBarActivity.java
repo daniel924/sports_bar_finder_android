@@ -26,12 +26,12 @@ public class FindBarActivity extends Activity {
     ListView listView = null;
     public BarAdapter adapter = null;
 
-    class SearchTask extends AsyncTask<String, Void, Bar> {
+    class SearchTask extends AsyncTask<String, Void, List<Bar>> {
 
         @Override
-        public Bar doInBackground(String... params) {
+        public List<Bar> doInBackground(String... params) {
             try {
-                final Bar response = ApiUtils.FindBarByName(params[0]);
+                final List<Bar> response = ApiUtils.FindBarByName(params[0]);
                 if(response == null) {
                     final String logString = "Could not find results for: " + params[0];
                     FindBarActivity.this.runOnUiThread(new Runnable() {
@@ -49,11 +49,8 @@ public class FindBarActivity extends Activity {
                 FindBarActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TextView notFoundText = (TextView) findViewById(R.id.not_found_txt);
-                        notFoundText.setVisibility(View.GONE);
-                        List<Bar> bars = new ArrayList<Bar>();
-                        bars.add(response);
-                        adapter.setList(bars);
+                        ((TextView) findViewById(R.id.not_found_txt)).setVisibility(View.GONE);
+                        adapter.setList(response);
                         listView.setVisibility(View.VISIBLE);
                     }
                 });
@@ -66,6 +63,7 @@ public class FindBarActivity extends Activity {
             }
         }
     }
+
 
     public static class BarFragment extends Fragment {
         @Override
@@ -85,7 +83,6 @@ public class FindBarActivity extends Activity {
         listView.setAdapter(adapter);
 
         final SearchView searchView = (SearchView) findViewById(R.id.edit_message);
-        final String barName = searchView.getQuery().toString();
 
         Button searchButton = (Button) findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -94,8 +91,6 @@ public class FindBarActivity extends Activity {
                 new SearchTask().execute(searchView.getQuery().toString());
             }
         });
-
-
     }
 
     @Override

@@ -29,12 +29,31 @@ public class BarAdapter extends ArrayAdapter<Bar> {
         if(convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.fragment_bar, null);
         }
+
+        Bar bar = bars.get(position);
+
         TextView barText = (TextView) convertView.findViewById(R.id.bar_result);
         TextView teamsText = (TextView) convertView.findViewById(R.id.teams_result);
-        barText.setText(bars.get(position).name);
-        teamsText.setText(bars.get(position).prettyPrintTeams());
+        TextView cityText = (TextView) convertView.findViewById(R.id.city_result);
+        TextView addressText = (TextView) convertView.findViewById(R.id.address_result);
+
+        setTextView(barText, bar.name);
+        setTextView(teamsText, bar.prettyPrintTeams());
+        setTextView(cityText, bar.city);
+        setTextView(addressText, bar.address);
 
         return convertView;
+    }
+
+    private void setTextView(TextView tv, String text) {
+        if(text.equals("")) {
+            tv.setVisibility(View.GONE);
+        }
+        else {
+            tv.setText(text);
+            tv.setVisibility(View.VISIBLE);
+        }
+
     }
 
     public void setList(List<Bar> bars) {

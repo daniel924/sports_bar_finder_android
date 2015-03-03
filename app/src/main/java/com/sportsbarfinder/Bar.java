@@ -8,10 +8,14 @@ import java.util.List;
 public class Bar {
     String name;
     List<String> teams;
+    String city;
+    String address;
 
-    public Bar(String name, List<String> teams) {
+    public Bar(String name, List<String> teams, String city, String address) {
         this.name = name;
         this.teams = teams;
+        this.city = city;
+        this.address = address;
     }
 
     public String prettyPrintTeams() {

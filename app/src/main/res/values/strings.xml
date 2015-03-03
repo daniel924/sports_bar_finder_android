@@ -7,6 +7,8 @@
     <string name="sports_team">Search for team or bar</string>
     <string name="insert_bar_title">Insert Bar</string>
     <string name="insert_bar">Bar</string>
+    <string name="insert_city">City</string>
+    <string name="insert_address">Address</string>
     <string name="insert_team">Teams separated by commas</string>
     <string name="action_insert">Insert</string>
 

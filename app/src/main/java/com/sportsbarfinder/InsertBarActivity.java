@@ -28,6 +28,8 @@ public class InsertBarActivity extends Activity {
             try {
                 final String bar = params[0];
                 final List<String> teams = Arrays.asList(params[1].split(","));
+                final String city = params[2];
+                final String address = params[3];
                 if(teams.size() < 1) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -40,7 +42,7 @@ public class InsertBarActivity extends Activity {
                     });
                     return null;
                 }
-                ApiUtils.insertBar(bar, teams);
+                ApiUtils.insertBar(bar, teams, city, address);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -68,12 +70,15 @@ public class InsertBarActivity extends Activity {
 
         final EditText barText = (EditText) findViewById(R.id.insert_bar_text);
         final EditText teamsText = (EditText) findViewById(R.id.insert_team_text);
+        final EditText cityText = (EditText) findViewById(R.id.insert_city_text);
+        final EditText addressText = (EditText) findViewById(R.id.insert_address_text);
         Button insertButton = (Button) findViewById(R.id.insert_button);
         insertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new InsertTask().execute(
-                        barText.getText().toString(), teamsText.getText().toString());
+                        barText.getText().toString(), teamsText.getText().toString(),
+                        cityText.getText().toString(), addressText.getText().toString());
             }
         });
     }
