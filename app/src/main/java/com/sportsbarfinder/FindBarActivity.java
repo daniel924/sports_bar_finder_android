@@ -3,6 +3,7 @@ package com.sportsbarfinder;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,29 +29,29 @@ public class FindBarActivity extends Activity {
     public BarAdapter adapter = null;
 
     class SearchTask extends AsyncTask<String, Void, List<Bar>> {
-
         @Override
         public List<Bar> doInBackground(String... params) {
             try {
                 final List<Bar> response = ApiUtils.FindBarByName(params[0]);
                 if(response == null) {
-                    final String logString = "Could not find results for: " + params[0];
+                    final String notFound = "Could not find results for: " + params[0];
                     FindBarActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             listView.setVisibility(View.GONE);
                             TextView notFoundText = (TextView) findViewById(R.id.not_found_txt);
                             notFoundText.setVisibility(View.VISIBLE);
-                            notFoundText.setText(logString);
+                            notFoundText.setText(notFound);
                         }
                     });
                     return null;
                 }
+
                 Log.d(LOG_TAG, "Response: " + response.toString());
                 FindBarActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((TextView) findViewById(R.id.not_found_txt)).setVisibility(View.GONE);
+                        findViewById(R.id.not_found_txt).setVisibility(View.GONE);
                         adapter.setList(response);
                         listView.setVisibility(View.VISIBLE);
                     }
@@ -63,6 +65,7 @@ public class FindBarActivity extends Activity {
             }
         }
     }
+
 
 
     public static class BarFragment extends Fragment {
@@ -91,6 +94,7 @@ public class FindBarActivity extends Activity {
                 new SearchTask().execute(searchView.getQuery().toString());
             }
         });
+
     }
 
     @Override
@@ -140,4 +144,33 @@ public class FindBarActivity extends Activity {
             // barText.setVisibility(View.VISIBLE);
         }
     }
+
+    public void clickMapButton(View v) {
+        Bar bar = (Bar) v.getTag();
+        String query = bar.name;
+        if(!bar.address.equals("")) {
+            query += ", " + bar.address;
+        }
+        if(!bar.city.equals("")) {
+            query += ", " + bar.city;
+        }
+        final Uri geoLocation = Uri.parse("geo:0,0?q=" + query);
+        final Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoLocation);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        FindBarActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(mapIntent.resolveActivity(FindBarActivity.this.getPackageManager()) == null) {
+                    Toast.makeText(
+                            FindBarActivity.this,
+                            "You need maps app for this feature.",
+                            Toast.LENGTH_SHORT);
+                }
+                else {
+                    FindBarActivity.this.startActivity(mapIntent);
+                }
+            }
+        });
+    }
+
 }
