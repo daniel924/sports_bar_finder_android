@@ -47,11 +47,12 @@
         android:layout_width="wrap_content"
         android:freezesText="true"
         android:id="@+id/map_result"
-        android:text="Map"
+        android:text="Maps"
         android:layout_rowSpan="4"
         android:layout_column="1"
         android:layout_gravity="center"
         android:onClick="clickMapButton"
+        android:background="@drawable/button_map"
         />
 
 </GridLayout>

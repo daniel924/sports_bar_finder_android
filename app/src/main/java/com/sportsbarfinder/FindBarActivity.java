@@ -27,12 +27,22 @@ public class FindBarActivity extends Activity {
     private static String LOG_TAG = FindBarActivity.class.getSimpleName();
     ListView listView = null;
     public BarAdapter adapter = null;
+    GpsFinder gpsFinder = null;
 
     class SearchTask extends AsyncTask<String, Void, List<Bar>> {
         @Override
         public List<Bar> doInBackground(String... params) {
             try {
-                final List<Bar> response = ApiUtils.FindBarByName(params[0]);
+                List<Bar> response = null;
+                if(gpsFinder.canGetLocation()) {
+                    double lat = gpsFinder.getLatitude();
+                    double lon = gpsFinder.getLongitude();
+                    response = ApiUtils.FindBarByName(params[0], lat, lon);
+                }
+                else {
+                    response = ApiUtils.FindBarByName(params[0], -1, -1);
+                }
+                final List<Bar> bars = response;
                 if(response == null) {
                     final String notFound = "Could not find results for: " + params[0];
                     FindBarActivity.this.runOnUiThread(new Runnable() {
@@ -52,10 +62,11 @@ public class FindBarActivity extends Activity {
                     @Override
                     public void run() {
                         findViewById(R.id.not_found_txt).setVisibility(View.GONE);
-                        adapter.setList(response);
+                        adapter.setList(bars);
                         listView.setVisibility(View.VISIBLE);
                     }
                 });
+
                 return response;
             }
             catch (IOException ex) {
@@ -65,7 +76,6 @@ public class FindBarActivity extends Activity {
             }
         }
     }
-
 
 
     public static class BarFragment extends Fragment {
@@ -84,6 +94,7 @@ public class FindBarActivity extends Activity {
         adapter = new BarAdapter(this, new ArrayList<Bar>());
         listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(adapter);
+        gpsFinder = new GpsFinder(this);
 
         final SearchView searchView = (SearchView) findViewById(R.id.edit_message);
 
@@ -94,7 +105,6 @@ public class FindBarActivity extends Activity {
                 new SearchTask().execute(searchView.getQuery().toString());
             }
         });
-
     }
 
     @Override
@@ -116,9 +126,6 @@ public class FindBarActivity extends Activity {
         }
         if(id == R.id.action_insert) {
             Intent intent = new Intent(this, InsertBarActivity.class);
-            // EditText editText = (EditText) findViewById(R.id.edit_message);
-            // String message = editText.getText().toString();
-            // intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
             return true;
         }
@@ -129,20 +136,10 @@ public class FindBarActivity extends Activity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        // Save state to the savedInstanceState
-        if (adapter != null) {
-            // Bar[] values = adapter.getValues();
-        }
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        // Restore state from savedInstanceState
-        String bar_result = savedInstanceState.getString("bar_list");
-        if(bar_result != null) {
-            // barText.setText(bar_result);
-            // barText.setVisibility(View.VISIBLE);
-        }
     }
 
     public void clickMapButton(View v) {

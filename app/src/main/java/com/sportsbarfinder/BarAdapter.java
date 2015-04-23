@@ -56,30 +56,7 @@ public class BarAdapter extends ArrayAdapter<Bar> {
         setTextView(holder.teams, bar.prettyPrintTeams());
         setTextView(holder.city, bar.city);
         setTextView(holder.address, bar.address);
-
         convertView.setTag(holder);
-
-//        TextView barText = (TextView) convertView.findViewById(R.id.bar_result);
-//        TextView teamsText = (TextView) convertView.findViewById(R.id.teams_result);
-//        TextView cityText = (TextView) convertView.findViewById(R.id.city_result);
-//        TextView addressText = (TextView) convertView.findViewById(R.id.address_result);
-//        Button mapButton = (Button) convertView.findViewById(R.id.map_result);
-//
-//        setTextView(barText, bar.name);
-//        setTextView(teamsText, bar.prettyPrintTeams());
-//        setTextView(cityText, bar.city);
-//        setTextView(addressText, bar.address);
-
-//
-//        holder.button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent mapIntent = new Intent(
-//                        Intent.ACTION_VIEW, geoLocation, view.getContext(), FindBarActivity.class);
-//                mapIntent.setPackage("com.google.android.apps.maps");
-//
-//            }
-//        });
 
         return convertView;
     }

@@ -26,9 +26,14 @@ public class ApiUtils {
     private static String LOG_TAG = ApiUtils.class.getSimpleName();
     private static String baseUrl = "http://sports-bar-finder.appspot.com/";
 
-    public static List<Bar> FindBarByName(String searchVal) throws IOException {
-        String response = getRequest(
-                baseUrl + "/search?value=" + URLEncoder.encode(searchVal, "UTF-8"));
+
+    public static List<Bar> FindBarByName(String searchVal, double lat, double lon) throws IOException {
+        String request = baseUrl + "/search?value=" + URLEncoder.encode(searchVal, "UTF-8");
+        if(lat != -1 && lon != -1) {
+            request += "&ll=" + URLEncoder.encode(
+                    String.valueOf(lat) + ',' + String.valueOf(lon), "UTF-8");
+        }
+        String response = getRequest(request);
         if (response.equals("")) {
             return null;
         }
