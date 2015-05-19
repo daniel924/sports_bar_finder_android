@@ -1,6 +1,8 @@
 package com.sportsbarfinder;
 
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -21,8 +24,8 @@ import java.util.List;
 public class ApiUtils {
 
 
-    private static final int CONNECTION_TIMEOUT_MS = 4000;
-    private static final int READ_TIMEOUT_MS = 500;
+    private static final int CONNECTION_TIMEOUT_MS = 15000;
+    private static final int READ_TIMEOUT_MS = 5000;
     private static String LOG_TAG = ApiUtils.class.getSimpleName();
     private static String baseUrl = "http://sports-bar-finder.appspot.com/";
 
@@ -33,7 +36,14 @@ public class ApiUtils {
             request += "&ll=" + URLEncoder.encode(
                     String.valueOf(lat) + ',' + String.valueOf(lon), "UTF-8");
         }
-        String response = getRequest(request);
+        String response = "";
+        try {
+            response = getRequest(request);
+        }
+        catch(SocketTimeoutException ex) {
+            Log.d(LOG_TAG, "Response timed out with connection_timeout=%s" + CONNECTION_TIMEOUT_MS +
+                           " and read_timeout=" + READ_TIMEOUT_MS);
+         }
         if (response.equals("")) {
             return null;
         }

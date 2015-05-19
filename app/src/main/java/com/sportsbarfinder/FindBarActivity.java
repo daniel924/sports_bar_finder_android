@@ -2,6 +2,7 @@ package com.sportsbarfinder;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -30,20 +31,30 @@ public class FindBarActivity extends Activity {
     GpsFinder gpsFinder = null;
 
     class SearchTask extends AsyncTask<String, Void, List<Bar>> {
+        ProgressDialog progress = null;
+
         @Override
-        public List<Bar> doInBackground(String... params) {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = new ProgressDialog(FindBarActivity.this);
+            progress.setTitle("Searching");
+            progress.setMessage("In Progress");
+            progress.show();
+        }
+
+        @Override
+        protected List<Bar> doInBackground(String... params) {
             try {
                 List<Bar> response = null;
-                if(gpsFinder.canGetLocation()) {
+                if (gpsFinder.canGetLocation()) {
                     double lat = gpsFinder.getLatitude();
                     double lon = gpsFinder.getLongitude();
                     response = ApiUtils.FindBarByName(params[0], lat, lon);
-                }
-                else {
+                } else {
                     response = ApiUtils.FindBarByName(params[0], -1, -1);
                 }
                 final List<Bar> bars = response;
-                if(response == null) {
+                if (response == null) {
                     final String notFound = "Could not find results for: " + params[0];
                     FindBarActivity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -54,9 +65,9 @@ public class FindBarActivity extends Activity {
                             notFoundText.setText(notFound);
                         }
                     });
+                    progress.dismiss();
                     return null;
                 }
-
                 Log.d(LOG_TAG, "Response: " + response.toString());
                 FindBarActivity.this.runOnUiThread(new Runnable() {
                     @Override
@@ -66,13 +77,18 @@ public class FindBarActivity extends Activity {
                         listView.setVisibility(View.VISIBLE);
                     }
                 });
-
                 return response;
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 Log.d(LOG_TAG, ex.getMessage());
                 ex.printStackTrace();
                 return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Bar> result) {
+            if(progress.isShowing()) {
+                progress.dismiss();
             }
         }
     }
